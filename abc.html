@@ -1,0 +1,21 @@
+{% assign start_date = trmnl.plugin_settings.custom_fields_values.starting_date | date: "%s" %}
+{% assign today_date = "now" | date: "%s" %}
+{% assign offset_sec = trmnl.user.utc_offset | times: 60 %}
+{% assign today_adjusted = today_date | plus: offset_sec %}
+{% assign start_date_adjusted = start_date | plus: offset_sec %}
+
+{% assign days_elapsed = today_adjusted | minus: start_date_adjusted | divided_by: 86400 %}
+
+{% assign letters = "A,B,C" | split: "," %}
+{% assign start_index = letters.index_of(trmnl.plugin_settings.custom_fields_values.starting_letter | upcase) %}
+{% assign letter_index = days_elapsed | plus: start_index | modulo: 3 %}
+{% assign today_letter = letters[letter_index] %}
+
+<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
+  <div style="font-size: 2rem; margin-bottom: 0.25em;">
+    Today is {% if today_letter == "A" %}an{% else %}a{% endif %}
+  </div>
+  <div style="font-size: 12rem; font-weight: bold;">
+    {{ today_letter }}
+  </div>
+</div>
